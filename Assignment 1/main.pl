@@ -1,13 +1,8 @@
-fieldSize(9, 9).
+size(9, 9).
 
-covid(7, 2).
-covid(2, 4).
-home(1,1).
-actor(1,8).
-doctor(4,4).
-mask(8,8).  % to debug
+:- [input].
 
-
+% Print what is located in (X,Y)
 print(X, Y) :-
     ( 
         covid(X,Y) -> write("C");
@@ -17,22 +12,53 @@ print(X, Y) :-
         write(".")
     ).
 
-
-iterate(X, Y) :-
-    % format("~a ~a\n", [X, Y]),
-    print(X,Y),
-    ( fieldSize(XSize, _), X < XSize - 1, Xnew is X + 1, iterate(Xnew, Y));
-
-    (fieldSize(XSize, _), X =:= XSize - 1, Y > 0, Ynew is Y - 1, 
-    write("\n"),
-    iterate(0, Ynew)).
-
+% func to implement print of the map
 iterate(Y) :-
     write(Y), write(" "), 
-    Y > 0, Ynew is Y - 1, 
-    iterate(Ynew).
+    Y > 0, Yn is Y - 1, 
+    iterate(Yn).
 
+% Doule loop to go thru the map
+show_map(X, Y) :-
+    print(X,Y),
+    ( size(Xlen, _), X < Xlen - 1, Xn is X + 1, show_map(Xn, Y));
+    ( size(Xlen, _), X =:= Xlen - 1, Y > 0, Yn is Y - 1, 
+    write("\n"),
+    show_map(0, Yn)).
+
+% Print map in terminal
 map :- 
-    fieldSize(_, YMax),
-    Y is YMax - 1,
-    iterate(0,Y).
+    size(_, Ymx),
+    Y is Ymx - 1,
+    show_map(0, Y).
+
+% Genearting entities in random places
+% generate_all :-
+%     random_between(0,8, X1),    
+%     random_between(0,8, Y1),
+%     covid(X1, Y1), 
+
+%     random_between(0,8, X1),    
+%     random_between(0,8, Y1),
+%     covid(X1, Y1), 
+
+%     random_between(0,8, X1),    
+%     random_between(0,8, Y1),
+%     Fact = home(X1, Y1), 
+
+%     random_between(0,8, X1),    
+%     random_between(0,8, Y1),
+%     Fact = actor(X1, Y1), 
+
+%     random_between(0,8, X1),    
+%     random_between(0,8, Y1),
+%     Fact = doctor(X1, Y1), 
+
+%     random_between(0,8, X1),    
+%     random_between(0,8, Y1),
+%     Fact = mask(X1, Y1).
+
+% main function to generate map and show it
+main :-
+    % generate_all(),
+    map().
